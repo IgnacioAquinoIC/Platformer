@@ -19,6 +19,8 @@ public class PlayerMovement : MonoBehaviour
     public float dashTimer = 0f;
     public float dashCooldown = 10f;
     private float cooldownTimer;
+    public float dashCooldownRemaining => Mathf.Max(0f, dashCooldown - cooldownTimer);
+    public bool dashReady => cooldownTimer >= dashCooldown;
     public float jump = 10f;
     bool canJump = false;
     //public bool canJumpRotation = false; Nope

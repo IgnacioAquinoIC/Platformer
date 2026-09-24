@@ -13,7 +13,8 @@ public class RotatingPlatform : MonoBehaviour
     private PlayerMovement player;
     float degrees = 90f;
     bool freeze = false;
-    private Quaternion targetRotation;
+    public Vector3 targetPosition;
+    public Quaternion targetRotation;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -29,7 +30,7 @@ public class RotatingPlatform : MonoBehaviour
     void FixedUpdate()
     {
         if (freeze) return;
-        Vector3 targetPosition = startPosition;
+        targetPosition = startPosition;
         Quaternion lasttargetRotation = targetRotation;
 
         switch (movementPhase)
@@ -83,25 +84,32 @@ public class RotatingPlatform : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            collision.transform.SetParent(transform);
-        }
+        //if (collision.gameObject.CompareTag("Player"))
+        //{
+            //collision.transform.SetParent(transform);
+        //}
     }
+
     private void OnCollisionStay(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        //if (collision.gameObject.CompareTag("Player"))
+        //{
+            //collision.transform.SetParent(transform);
+        //}
+
+        if(collision.gameObject.TryGetComponent<PlayerMovement>(out var player))
         {
-            collision.transform.SetParent(transform);
+            player.transform.position = Vector3.MoveTowards(player.transform.position, targetPosition, travelSpeed * Time.fixedDeltaTime);
+            player.transform.rotation = Quaternion.RotateTowards(player.transform.rotation, targetRotation, degrees * Time.fixedDeltaTime);
         }
     }
 
     private void OnCollisionExit(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            collision.transform.SetParent(null);
-        }
+        //if (collision.gameObject.CompareTag("Player"))
+        //{
+            //collision.transform.SetParent(null);
+        //}
     }
 
     IEnumerator Freeze()
